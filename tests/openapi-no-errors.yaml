@@ -1,0 +1,199 @@
+openapi: 3.0.3
+info:
+  title: Where the ISS at?
+  version: 1.0.0
+  description: |
+    Welcome to the "Where the International Space Station (ISS) at" API. Using this service, you can get current, past, or future positions of the ISS, timezone information about a set of coordinates, and Two-Line Element (TLE) data on the ISS.
+
+  contact:
+    name: Mark Sivill
+    url: https://www.linkedin.com/in/mark-sivill/
+
+servers:
+  - url: https://api.wheretheiss.at/v1
+
+tags:
+  - name: satellites
+    description: "Operations related to satellite information"
+  - name: coordinates
+    description: "Operations related to coordinates information"
+
+paths:
+  /satellites:
+    get:
+      summary: Get a list of satellites
+      description: Returns a list of satellites, including common names and NORAD catalog ids.
+      operationId: get-satellites
+      tags:
+        - satellites
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                - name: "iss"
+                  id: 25544
+
+  /satellites/{id}:
+    get:
+      summary: Get information about a specific satellite
+      description: Returns position, velocity, and other related information about a satellite for a given point in time.
+      operationId: get-satellite-by-id
+      tags:
+        - satellites
+      parameters:
+        - name: id
+          in: path
+          description: The NORAD catalog id of the satellite
+          required: true
+          schema:
+            type: integer
+            default: 25544
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                name: "iss"
+                id: 25544
+                latitude: 50.11496269845
+                longitude: 118.07900427317
+                altitude: 408.05526028199
+                velocity: 27635.971970874
+                visibility: "daylight"
+                footprint: 4446.1877699772
+                timestamp: 1364069476
+                daynum: 2456375.3411574
+                solar_lat: 1.3327003598631
+                solar_lon: 238.78610691196
+                units: "kilometers"
+
+  /satellites/{id}/positions:
+    get:
+      summary: Get positions of a satellite at specified timestamps
+      description: Returns position, velocity, and other related information about a satellite for a comma-delimited list of timestamps (up to 10).
+      operationId: get-satellite-positions
+      tags:
+        - satellites
+      parameters:
+        - name: id
+          in: path
+          description: The NORAD catalog id of the satellite
+          required: true
+          schema:
+            type: integer
+            default: 25544
+        - name: timestamps
+          in: query
+          description: Comma-delimited list of timestamps for orbital positions (limit 10). Only numbers and commas are allowed as input, remove trailing commas
+          required: true
+          schema:
+            type: string
+            pattern: ^\d+(,\d+){0,9}$
+        - name: units
+          in: query
+          description: Whether to use miles or kilometers
+          required: false
+          schema:
+            type: string
+            enum: ["miles", "kilometers"]
+            default: "kilometers"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                - name: "iss"
+                  id: 25544
+                  latitude: -24.872011788413
+                  longitude: 17.600256937812
+                  altitude: 253.3204968444
+                  velocity: 17148.926453151
+                  visibility: "daylight"
+                  timestamp: 1436029892
+                  daynum: 2457208.2163426
+                  units: "miles"
+
+  /satellites/{id}/tles:
+    get:
+      summary: Get TLE data for a satellite
+      description: Returns the TLE data for a given satellite in either JSON or text format.
+      operationId: get-satellite-tles
+      tags:
+        - satellites
+      parameters:
+        - name: id
+          in: path
+          description: The NORAD catalog id of the satellite
+          required: true
+          schema:
+            type: integer
+            default: 25544
+        - name: format
+          in: query
+          description: Response format, can be JSON or text
+          required: false
+          schema:
+            type: string
+            enum: ["json", "text"]
+            default: "json"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                requested_timestamp: 1364084064
+                tle_timestamp: 1363892433
+                id: "25544"
+                name: "iss"
+                header: "ISS (ZARYA)"
+                line1: "1 25544U 98067A   13080.79204657  .00024647  00000-0  40606-3 0  4540"
+                line2: "2 25544  51.6478 182.2316 0011718  59.7125  80.2831 15.52100765821132"
+            text/plain:
+              example: |
+                ISS (ZARYA)
+                1 25544U 98067A   13080.79204657  .00024647  00000-0  40606-3 0  4540
+                2 25544  51.6478 182.2316 0011718  59.7125  80.2831 15.52100765821132
+
+  /coordinates/{lat},{lon}:
+    get:
+      summary: Get position and timezone information for coordinates
+      description: Returns position, current time offset, country code, and timezone id for a given set of coordinates.
+      operationId: get-coordinates
+      tags:
+        - coordinates
+      parameters:
+        - name: lat
+          in: path
+          description: Latitude
+          required: true
+          schema:
+            type: number
+            default: 51.4769
+            minimum: -90
+            maximum: 90
+        - name: lon
+          in: path
+          description: Longitude
+          required: true
+          schema:
+            type: number
+            default: 0
+            minimum: -180
+            maximum: 180
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                latitude: "37.795517"
+                longitude: "-122.393693"
+                timezone_id: "America/Los_Angeles"
+                offset: -7
+                country_code: "US"
+                map_url: "https://maps.google.com/maps?q=37.795517,-122.393693&z=4"

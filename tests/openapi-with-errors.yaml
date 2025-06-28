@@ -1,0 +1,169 @@
+openapi: 3.0.0
+info:
+  title: Where the ISS at? REST API
+  description: API to get information about the International Space Station (ISS) and coordinates.
+  version: 1.0.0
+servers:
+  - url: https://api.wheretheiss.at/v1
+paths:
+  /satellites:
+    get:
+      summary: Get a list of satellites
+      operationId: getSatellites
+      responses:
+        '200':
+          description: A list of satellites
+          content:
+            application/json:
+              example:
+                - name: iss
+                  id: 25544
+      parameters: []
+
+  /satellites/{id}:
+    get:
+      summary: Get information about a satellite by ID
+      operationId: getSatelliteById
+      responses:
+        '200':
+          description: Information about a satellite
+          content:
+            application/json:
+              example:
+                name: iss
+                id: 25544
+                latitude: 50.11496269845
+                longitude: 118.07900427317
+                altitude: 408.05526028199
+                velocity: 27635.971970874
+                visibility: daylight
+                footprint: 4446.1877699772
+                timestamp: 1364069476
+                daynum: 2456375.3411574
+                solar_lat: 1.3327003598631
+                solar_lon: 238.78610691196
+                units: kilometers
+      parameters:
+        - name: id
+          in: path
+          description: The NORAD catalog ID of the satellite (e.g., 25544)
+          required: true
+          schema:
+            type: integer
+
+  /satellites/{id}/positions:
+    get:
+      summary: Get positions of a satellite for a list of timestamps
+      operationId: getSatellitePositions
+      responses:
+        '200':
+          description: Positions of the satellite for the specified timestamps
+          content:
+            application/json:
+              example:
+                - name: iss
+                  id: 25544
+                  latitude: -24.872011788413
+                  longitude: 17.600256937812
+                  altitude: 253.3204968444
+                  velocity: 17148.926453151
+                  visibility: daylight
+                  footprint: 2761.5254566356
+                  timestamp: 1436029892
+                  daynum: 2457208.2163426
+                  solar_lat: 22.85465108118
+                  solar_lon: 283.22043315343
+                  units: miles
+                - name: iss
+                  id: 25544
+                  latitude: -25.346134802867
+                  longitude: 18.047422455202
+                  altitude: 253.44244641825
+                  velocity: 17148.616662804
+                  visibility: daylight
+                  footprint: 2762.1565371697
+                  timestamp: 1436029902
+                  daynum: 2457208.2164583
+                  solar_lat: 22.854640837166
+                  solar_lon: 283.17877169756
+                  units: miles
+      parameters:
+        - name: id
+          in: path
+          description: The NORAD catalog ID of the satellite (e.g., 25544)
+          required: true
+          schema:
+            type: integer
+        - name: timestamps
+          in: query
+          description: Comma-delimited list of timestamps (limit 10)
+          required: true
+          schema:
+            type: string
+        - name: units
+          in: query
+          description: Units for distance measurement (miles or kilometers)
+          schema:
+            type: string
+            enum: [miles, kilometers]
+
+  /satellites/{id}/tles:
+    get:
+      summary: Get TLE data for a satellite
+      operationId: getSatelliteTLE
+      responses:
+        '200':
+          description: TLE data for the specified satellite
+          content:
+            application/json:
+              example:
+                requested_timestamp: 1364084064
+                tle_timestamp: 1363892433
+                id: "25544"
+                name: "iss"
+                header: "ISS (ZARYA)"
+                line1: "1 25544U 98067A   13080.79204657  .00024647  00000-0  40606-3 0  4540"
+                line2: "2 25544  51.6478 182.2316 0011718  59.7125  80.2831 15.52100765821132"
+      parameters:
+        - name: id
+          in: path
+          description: The NORAD catalog ID of the satellite (e.g., 25544)
+          required: true
+          schema:
+            type: integer
+        - name: format
+          in: query
+          description: Response format (json or text)
+          schema:
+            type: string
+            enum: [json, text]
+
+  /coordinates/{lat,lon}:
+    get:
+      summary: Get information for a set of coordinates
+      operationId: getCoordinatesInfo
+      responses:
+        '200':
+          description: Information for the specified coordinates
+          content:
+            application/json:
+              example:
+                latitude: "37.795517"
+                longitude: "-122.393693"
+                timezone_id: "America/Los_Angeles"
+                offset: -7
+                country_code: "US"
+                map_url: "https://maps.google.com/maps?q=37.795517,-122.393693&z=4"
+      parameters:
+        - name: lat
+          in: path
+          description: Latitude of the coordinates
+          required: true
+          schema:
+            type: number
+        - name: lon
+          in: path
+          description: Longitude of the coordinates
+          required: true
+          schema:
+            type: number
