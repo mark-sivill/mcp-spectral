@@ -16,6 +16,8 @@ import os
 from pydantic import BaseModel, Field, ConfigDict
 
 # structure used to return outcome of command line instruction
+# if ok return outcome of commandline call
+# else return error string in err
 class SpectralResult(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     ok: Optional[subprocess.CompletedProcess] = Field(default=None)
@@ -57,11 +59,12 @@ class SpectralWrapper:
             openapi_specification_filename = f"{working_directory}/openapi-spec"
             spectral_ruleset_filename = f"{working_directory}/ruleset.yaml"
 
-            #shutil.copy2(oas_file_path, openapi_spec )
+            # create openapi file using provided string
             self.__write_to_file( openapi_specification_filename, openapi_specification )
 
             cmd = [self.spectral_command, "lint", openapi_specification_filename, "--format", "json"]
 
+            # create spectral ruleset using default file or using provided string
             if spectral_ruleset:
                 self.__write_to_file( spectral_ruleset_filename, spectral_ruleset )
             else:
@@ -76,7 +79,7 @@ class SpectralWrapper:
         except Exception as e:
             return SpectralResult(err=str(e))
         finally:
-            # remove created filesworking directory
+            # tidy up - remove created working directory
             shutil.rmtree(working_directory)
 
     #
