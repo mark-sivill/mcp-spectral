@@ -80,7 +80,7 @@ For example if MCP Spectral is also installed with [mcp/fetch](https://hub.docke
 
 Once the file has been updated, restart the Claude Desktop.
 
-Claude Desktop will automatically pull the [latest docker version of MCP Spectral](https://hub.docker.com/repository/docker/marksivill/mcp-spectral/) from [Docker Hub](https://hub.docker.com/repositories/marksivill)
+Claude Desktop will automatically pull the [latest docker version of MCP Spectral](https://hub.docker.com/r/marksivill/mcp-spectral) from [Docker Hub](https://hub.docker.com/)
 
 ### Local builds
 
@@ -145,6 +145,6 @@ If any errors are found, fix them, then revalidate, repeat the last steps until 
 ## Useful links
 
 * [What is an MCP Server?⁠](https://www.anthropic.com/news/model-context-protocol)
-* [MCP Spectral on Docker Hub](https://hub.docker.com/repository/docker/marksivill/mcp-spectral/)
+* [MCP Spectral on Docker Hub](https://hub.docker.com/r/marksivill/mcp-spectral)
 * [Spectral](https://stoplight.io/open-source/spectral) linter for OpenAPI specifications
 
