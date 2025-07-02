@@ -147,4 +147,7 @@ If any errors are found, fix them, then revalidate, repeat the last steps until 
 * [What is an MCP Server?⁠](https://www.anthropic.com/news/model-context-protocol)
 * [MCP Spectral on Docker Hub](https://hub.docker.com/r/marksivill/mcp-spectral)
 * [Spectral](https://stoplight.io/open-source/spectral) linter for OpenAPI specifications
+* [Reducing AI Hallucinations When Generating OpenAPI Specifications](https://www.linkedin.com/pulse/reducing-ai-hallucinations-when-generating-openapi-mark-sivill-reuye/) using MCP Spectral
+
+
 
